@@ -1,0 +1,14 @@
+#Task 2: Write a query that directly answers question(s) from a business stakeholder
+#Question: How many users scanned in each month?
+select date_format(date_scanned, '%Y-%m') as months, count(distinct user_id) as scanned_users from receipts
+group by date_format(date_scanned, '%Y-%m')
+
+#Question: Which user spent the most money in the month of August
+select * from
+(select date_format(date_scanned, '%Y-%m') as months, user_id, sum(total_spent) as individual_spent, row_number() over(partition by date_format(date_scanned, '%Y-%m') order by  sum(total_spent) desc) as num from receipts
+where month(finished_date) = 8
+group by date_format(date_scanned, '%Y-%m'), user_id) a
+where num = 1
+#Ans: In the August of 2021, user 609ab37f7a2e8f2f95ae968f spent most money; in the August of 2022, user 5ffb49a847903912705e9a64 turned to be the one spent most.
+
+
